@@ -64,34 +64,13 @@ const Agent = ({ userName, userId, type }: AgentProps) => {
   }, [messages, callStatus, type, userId]);
 
   const handleCall = async () => {
-    try {
-      setCallStatus(CallStatus.CONNECTING);
-
-      // Check if browser supports getUserMedia
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        throw new Error(
-          "Your browser doesn't support audio input. Please use a modern browser like Chrome."
-        );
-      }
-
-      // Request microphone permissions explicitly
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      console.log(userId);
-
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
-    } catch (error) {
-      console.error("Call start error:", error);
-      setCallStatus(CallStatus.INACTIVE);
-      // You might want to show this error to the user in a more user-friendly way
-      alert(
-        "Failed to start call. Please check your microphone permissions and try again."
-      );
-    }
+    setCallStatus(CallStatus.CONNECTING);
+    await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
+      variableValues: {
+        username: userName,
+        userid: userId,
+      },
+    });
   };
 
   const handleDisconnect = () => {
