@@ -1,4 +1,7 @@
-import { getInterviewById } from "@/lib/actions/general.action";
+import {
+  getFeedbackByInterviewId,
+  getInterviewById,
+} from "@/lib/actions/general.action";
 import { redirect } from "next/navigation";
 import React from "react";
 import Image from "next/image";
@@ -14,6 +17,10 @@ const InterviewPage = async ({
   if (!interview) redirect("/");
   const user = await getCurrentUser();
   if (!user) redirect("/");
+  const feedback = await getFeedbackByInterviewId({
+    interviewId: id,
+    userId: user?.id!,
+  });
   return (
     <>
       <div className="flex flex-row gap-4 justify-between">
@@ -37,9 +44,10 @@ const InterviewPage = async ({
 
       <Agent
         userName={user?.name}
-        type={user?.id}
+        userId={user?.id}
         interviewId={id}
         type="interview"
+        feedbackId={feedback?.id}
         questions={interview.questions}
       />
     </>
